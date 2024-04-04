@@ -1,0 +1,18 @@
+form {
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+}
+
+.coche {
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+    padding: 15px;
+    background-color: rgba(29, 150, 169, 0.5);
+    border-radius: 10px;
+
+    h3 {
+        margin-top: 5px;
+    }
+}
