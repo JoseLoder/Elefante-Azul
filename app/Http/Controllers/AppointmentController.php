@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\TipeWash;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -12,7 +13,9 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        return view('appointments.index');
+        $appointments = Appointment::all();
+
+        return view('appointments.index', compact('appointments'));
     }
 
     /**
@@ -20,7 +23,9 @@ class AppointmentController extends Controller
      */
     public function create()
     {
-        return view('appointments.create');
+        $listado = TipeWash::all();
+
+        return view('appointments.create', compact('listado'));
     }
 
     /**
@@ -33,16 +38,16 @@ class AppointmentController extends Controller
         $validated = $request->validate([
             'name' => 'required|regex:/^[a-zA-Z]+$/',
             'phone' =>  'required|regex:/^[679][0-9]{8}$/',
-            'lisense_plate' => 'required|regex:/^[0-9]{4}[a-zA-Z]{3}$/',
+            'license_plate' => 'required|regex:/^[0-9]{4}[a-zA-Z]{3}$/',
             'entry' => 'required|date|after_or_equal:today',
             'brand' => 'required',
             'model' => 'required',
-            'tipe_wash' => 'required',
+            'tipe_wash_id' => 'required',
         ]);
 
 
         $appointment = Appointment::create(
-            $appointment->prepareToInsert($validated)
+            $appointment->prepareToInsert($validated, $request)
         );
 
         return redirect()->route('appointments.show', $appointment);

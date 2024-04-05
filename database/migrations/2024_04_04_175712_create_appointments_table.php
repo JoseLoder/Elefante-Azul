@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\TipeWash;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,8 @@ return new class extends Migration
             $table->string('phone');
             $table->string('car');
             $table->string('license_plate');
-            // $table->foreign('tipe_wash')->constrained('tipe_wash'); TODO!!!
+            $table->foreignIdFor(TipeWash::class);
+            $table->string('tipe_wash');
             $table->integer('wheels');
             $table->integer('price');
             $table->timestamps();

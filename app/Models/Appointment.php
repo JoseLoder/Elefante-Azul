@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\Validated;
 
 class Appointment extends Model
 {
@@ -17,42 +18,44 @@ class Appointment extends Model
         'phone',
         'car',
         'license_plate',
+        'tipe_wash_id',
         'tipe_wash',
         'wheels',
         'price'
     ];
 
-    public function prepareToInsert($validated)
+    public function prepareToInsert($validated, $request)
     {
         //Declaración de variables.
-        $validated->price = 0;
-        $validated->exit = 0;
+        $validated['price'] = 0;
+        $validated['exit'] = 0;
 
         //comprobamos si existe llantas y le asociamos el valor parseado a entero y si no lo declaramos como 0
-        $validated->has('wheels') ? $validated->wheels = intval($validated->wheels) : $validated->wheels = 0;
+        // isset($validated['wheels']) ? $validated['wheels'] : $validated['wheels'] = 0;
+        $validated['wheels'] = $request->has('wheels') ? $request->input('wheels') : 0;
 
         //Después se lo añadimos al precio y a la salida.
-        $validated->price += intval($validated->wheels);
-        $validated->exit += intval($validated->wheels);
+        $validated['price'] += intval($validated['wheels']);
+        $validated['exit'] += intval($validated['wheels']);
 
 
         // Concatenar marca y modelo en una variable coche
-        $validated->car = $validated->brand . ' ' . $validated->model;
+        $validated['car'] = $validated['brand'] . ' ' . $validated['model'];
 
         //Obtener el tipo lavado y su descripción.
-        // $tipe = TipeWash::where('id', $validated->tipe_wash)->first();
+        $tipe = TipeWash::where('id', $validated['tipe_wash_id'])->first();
 
-        // //Cambiamos la variable que guarda la id del valor por su nombre correspondiente
-        // $validated->tipe_wash = $tipe->description;
+        // Guardamos la descripción del tipo de lavado para ahorrar consultas en el servidor cuando se imprima el ticket
+        $validated['tipe_wash'] = $tipe['description'];
 
-        // //Sumar a los datos de la cita el precio y el tiempo del tipo de lavado.. y declarar $validated->exit
-        // $validated->price = intval($validated->price) + intval($tipe->price);
-        // $validated->exit = intval($validated->exit) + intval($tipe->time);
+        // Sumar a los datos de la cita el precio y el tiempo del tipo de lavado.. y declarar $validated['exit']
+        $validated['price'] = intval($validated['price']) + intval($tipe['price']);
+        $validated['exit'] = intval($validated['exit']) + intval($tipe['time']);
 
         // Generar fecha
 
         // Generamos el formato
-        $appointmentDate = Carbon::createFromFormat('Y-m-d', $validated->entry);
+        $appointmentDate = Carbon::createFromFormat('Y-m-d', $validated['entry']);
 
         // Inicialmente arrancamos desde las 8 am
         $appointmentDate->hour(8)->minute(0);
@@ -69,11 +72,16 @@ class Appointment extends Model
         }
 
         // Guardamos la fecha y hora de entrada.
-        $validated->entry = Carbon::createFromFormat('Y-m-d H:i:s', $appointmentDate->toDateString() . ' ' . $appointmentDate->toTimeString());
+        $validated['entry'] = Carbon::createFromFormat('Y-m-d H:i:s', $appointmentDate->toDateString() . ' ' . $appointmentDate->toTimeString());
 
         // Generamos la fecha u la hora de salida partiendo de los minutos que hemos acomulado en $datos['salida']
-        $validated->exit = Carbon::createFromFormat('Y-m-d H:i:s', $appointmentDate->toDateString() . ' ' . $appointmentDate->addMinute($validated->exit)->toTimeString());
+        $validated['exit'] = Carbon::createFromFormat('Y-m-d H:i:s', $appointmentDate->toDateString() . ' ' . $appointmentDate->addMinute($validated['exit'])->toTimeString());
 
         return $validated;
+    }
+
+    public function tipeWash()
+    {
+        return $this->belongsTo(TipeWash::class);
     }
 }

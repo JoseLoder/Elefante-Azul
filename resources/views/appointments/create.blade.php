@@ -42,9 +42,9 @@
             <span>{{$message}}</span>
             @enderror
     
-            <label for="lisense_plate">Matrícula</label>
-            <input type="text" name="lisense_plate" value="{{ old('lisense_plate') }}">
-            @error('lisense_plate')
+            <label for="license_plate">Matrícula</label>
+            <input type="text" name="license_plate" value="{{ old('license_plate') }}">
+            @error('license_plate')
             <span>{{$message}}</span>
             @enderror
         </div>
@@ -52,19 +52,19 @@
     
         <h3>Tipo de lavado</h3>
     
-        {{-- <select name="tipe_wash">
+        <select name="tipe_wash_id">
             <option value="">Elige un tipo de lavado..</option>
             @foreach ($listado as $op)
-            <option value="{{ $op->id }}" {{ old('tipe_wash') == $op->id ? 'selected' : '' }}>{{ $op->descripcion }}</option>
+            <option value="{{ $op->id }}" {{ old('tipe_wash_id') == $op->id ? 'selected' : '' }}>{{ $op->description }}</option>
             @endforeach
         </select>
-        @error('tipe_wash')
+        @error('tipe_wash_id')
         <span>{{$message}}</span>
-        @enderror --}}
+        @enderror
     
         <div>
             <label for="wheels">Limpieza de llantas (15€)</label>
-            <input type="checkbox" name="wheels" value="15">
+            <input type="checkbox" name="wheels" value="15" {{old('wheels')>0 ? 'checked' : ''}}>
         </div>
     
         <label for="entry">Fecha</label>
