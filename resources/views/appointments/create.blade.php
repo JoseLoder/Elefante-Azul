@@ -74,7 +74,9 @@
         @enderror
     
         <button  type="submit">Crear pedido</button>
-        <a href="{{ route('appointments.index') }}">Ver Listado</a>
+        @if (Auth::check())
+            <a href="{{ route('appointments.index') }}">Ver Listado</a>
+        @endif
     </form>
     <x-footer/>
 </x-template>
