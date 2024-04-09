@@ -71,7 +71,7 @@ class AppointmentController extends Controller
         $listado = TipeWash::all();
 
         return response()->json([
-            'status' => true,
+            'status' => 'success',
             'data' => $listado,
             'message' => null,
             'errors' => null,
@@ -99,20 +99,25 @@ class AppointmentController extends Controller
 
         if ($validated->fails()) {
             return response()->json([
-                'status' => false,
+                'status' => 'error',
                 'data' => null,
                 'message' => 'Validation error',
                 'errors' => $validated->errors(),
                 'token' => null
             ], 400);
         }
+        // A diferencia del método validate del objeto Request(que devuelve un array)..
+        // El método make del objeto Validator devuelve un objeto Validator
+        // Esto significa que la función prepareToInsert no puede acceder a los datos, por lo que tendremos que transformarlos en un array
+
+        $validatedArray = $validated->validated();
 
         $appointment = Appointment::create(
-            $appointment->prepareToInsert($validated, $request)
+            $appointment->prepareToInsert($validatedArray, $request)
         );
 
         return response()->json([
-            'status' => true,
+            'status' => 'success',
             'data' => $appointment,
             'message' => 'Appointment created successfully',
             'errors' => null,
