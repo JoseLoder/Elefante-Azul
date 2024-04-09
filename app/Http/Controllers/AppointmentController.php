@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\TipeWash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -62,26 +63,60 @@ class AppointmentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Respond to API request to create the form 
      */
-    public function edit(Appointment $appointment)
+    public function apiCreate()
     {
-        //
+
+        $listado = TipeWash::all();
+
+        return response()->json([
+            'status' => true,
+            'data' => $listado,
+            'message' => null,
+            'errors' => null,
+            'token' => null
+        ], 200);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Respond to API request to store the form 
      */
-    public function update(Request $request, Appointment $appointment)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Appointment $appointment)
+    public function apiStore(Request $request)
     {
-        //
+        $appointment = new Appointment();
+
+        $validated = Validator::make($request->all(), [
+            'name' => 'required|regex:/^[a-zA-Z]+$/',
+            'phone' =>  'required|regex:/^[679][0-9]{8}$/',
+            'license_plate' => 'required|regex:/^[0-9]{4}[a-zA-Z]{3}$/',
+            'entry' => 'required|date|after_or_equal:today',
+            'brand' => 'required',
+            'model' => 'required',
+            'tipe_wash_id' => 'required',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'status' => false,
+                'data' => null,
+                'message' => 'Validation error',
+                'errors' => $validated->errors(),
+                'token' => null
+            ], 400);
+        }
+
+        $appointment = Appointment::create(
+            $appointment->prepareToInsert($validated, $request)
+        );
+
+        return response()->json([
+            'status' => true,
+            'data' => $appointment,
+            'message' => 'Appointment created successfully',
+            'errors' => null,
+            'token' => null
+        ], 201);
     }
 }
