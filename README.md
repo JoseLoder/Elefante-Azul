@@ -23,7 +23,8 @@ When we clone a Laravel repository some files are removed for security but, luck
 
 ## API REST Feature
 
-#Introduction
+Introduction.
+
 The API that I have developed is focused to generate a form consuming GET request that will bring us the types of washing that we currently have available and, in this way, make a request to register a new appointment in our database.
 Once the request is received, our server will launch a response 'status' : 'error' (with the errors if any) or 'status' : 'success' if everything is correct with the fields ready to show the ticket to the customer. 
 Let's go by parts:
