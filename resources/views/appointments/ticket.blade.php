@@ -22,7 +22,7 @@
                 <li>Coche = {{$appointment->car}}</li>
                 <li>Matrícula = {{$appointment->license_plate}}</li>
                 <li>Tipo de Lavado = {{$appointment->tipe_wash}}</li>
-                <li>Limpieza de llantas = {{$appointment->wheels == 15 ? 'Sí' : 'No'}}</li>
+                <li>Limpieza de llantas = {{$appointment->wheels > 0 ? 'Sí' : 'No'}}</li>
                 <li>Precio total = {{$appointment->price}}€</li>
             </ul>
         
