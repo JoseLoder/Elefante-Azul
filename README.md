@@ -55,6 +55,9 @@ On the other hand, if it is wrong, it will return the following (screenshot with
 
 ![image](https://github.com/MartinSilvaJose/Elefante-Azul/assets/118887247/ec54646d-292b-4e6a-aeaa-a2d66cd72672)
 
+If you need a more visual and practical support of how to use the API I have created a project with php and cURL where I use this same API REST. In this project you can visualize in a more practical way how to manage the errors that the API returns in case the request is wrong.
+
+Example project: https://github.com/MartinSilvaJose/Cliente-API-REST-Curl
 
 ## Learning Laravel
 
