@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TipeWashController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -22,3 +23,6 @@ Route::resource('appointments', AppointmentController::class)
 Route::resource('appointments', AppointmentController::class)
     ->only(['index'])
     ->middleware('auth');
+
+Route::resource('/tipe_wash', TipeWashController::class)
+    ->only(['index', 'create', 'store']);

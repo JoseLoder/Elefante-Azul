@@ -31,7 +31,13 @@ class TipeWashController extends Controller
         ]);
 
         // guardamos los datos en la tabla tipe_wash
-        TipeWash::create($request->all());
+        $tipeWash = new TipeWash;
+
+        $tipeWash->description = $request->description;
+        $tipeWash->price = $request->price;
+        $tipeWash->time = $request->time;
+
+        $tipeWash->save();
 
         // redireccionamos a la vista index
         return redirect()->route('tipe_wash.index');
