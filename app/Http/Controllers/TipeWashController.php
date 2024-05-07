@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TipeWash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TipeWashController extends Controller
 {
@@ -23,23 +24,36 @@ class TipeWashController extends Controller
 
     public function store(Request $request)
     {
-        // validamos los datos del formulario
-        $request->validate([
+        // validamos los datos del formulario con el objeto Validator para tener más control sobre la validación
+
+        $validator = Validator::make($request->all(), [
             'description' => 'required | unique:tipe_washes',
             'price' => 'required | numeric | min:0',
             'time' => 'required | numeric | min:0',
         ]);
 
-        // guardamos los datos en la tabla tipe_wash
-        $tipeWash = new TipeWash;
+        if ($validator->fails()) {
+            // si la validación falla, devolvemos un mensaje de error
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ]);
+        } else {
+            // guardamos los datos en la tabla tipe_wash si la validación es correcta
+            $tipeWash = new TipeWash;
 
-        $tipeWash->description = $request->description;
-        $tipeWash->price = $request->price;
-        $tipeWash->time = $request->time;
+            $tipeWash->description = $request->description;
+            $tipeWash->price = $request->price;
+            $tipeWash->time = $request->time;
 
-        $tipeWash->save();
+            $tipeWash->save();
 
-        // redireccionamos a la vista index
-        return redirect()->route('tipe_wash.index');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Tipe Wash created successfully',
+                'data' => $tipeWash
+            ]);
+        }
     }
 }
