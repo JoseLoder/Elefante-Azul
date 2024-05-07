@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TipeWash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TipeWashController extends Controller
@@ -55,5 +56,62 @@ class TipeWashController extends Controller
                 'data' => $tipeWash
             ]);
         }
+    }
+
+    public function getListado(Request $request)
+    {
+
+        //Construcción del WHERE
+        $where = '';
+
+        if (!empty($request->search['value'])) {
+            $stringAdded = false;
+            $where .= 'WHERE ';
+            for ($i = 0; $i < count($request->columns); $i++) {
+
+                $searchable = json_decode($request->columns[$i]['searchable']);
+
+                if ($searchable) {
+                    if ($stringAdded) {
+                        $where .= ' OR ';
+                    }
+
+                    $where .= $request->columns[$i]['name'] . ' LIKE \'%' . $request->search['value'] . '%\'';
+                    $stringAdded = true;
+                }
+            }
+        }
+
+        //Construcción del ORDER BY
+        $orderBy = 'ORDER BY ' . $request->columns[$request->order[0]['column']]['name'] . ' ' . $request->order[0]['dir'];
+
+        //Construcción de la paginación
+        $paginacion = '';
+        if ($request->length != -1) {
+            $paginacion .= 'LIMIT ' . $request->length . ' OFFSET ' . $request->start;
+        }
+
+        //Ejecución de la consulta
+        $tipeWash = DB::select('SELECT * FROM tipe_wash ' . $where . ' ' . $orderBy . ' ' . $paginacion);
+
+        //Número de registros
+        $recordsFiltered = DB::select('SELECT COUNT(id) as recordsNum FROM tipe_wash ' . $where)[0]->recordsNum;
+        $recordsTotal = DB::select('SELECT COUNT(id) as recordsNum FROM tipe_wash')[0]->recordsNum;
+
+        //Datos
+        $datos = array();
+
+        foreach ($tipeWash as $tipe) {
+            $item = array();
+
+            $item['id'] = $tipe->id;
+            $item['description'] = $tipe->description;
+            $item['price'] = $tipe->price;
+            $item['time'] = $tipe->time;
+
+            $datos[] = $item;
+        }
+
+        return response()->json(['draw' => $request->draw, 'recordsTotal' => $recordsTotal, 'recordsFiltered' => $recordsFiltered, 'data' => $datos]);
     }
 }

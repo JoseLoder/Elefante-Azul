@@ -175,8 +175,6 @@
             }else {
                 timeError.innerHTML = '';
             }
-
-            console.log(Object.keys(errors).length);
             
             if (noErrors && Object.keys(errors).length === 3) {
                 buttonSend.disabled = false;

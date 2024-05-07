@@ -21,6 +21,7 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 // Route::get('/tipe_wash/create', [TipeWashController::class, 'create'])->name('tipe_wash.create');
 // Route::post('/tipe_wash', [TipeWashController::class, 'store'])->name('tipe_wash.store');
 
+
 Route::resource('appointments', AppointmentController::class)
     ->only(['create', 'store', 'show']);
 
@@ -30,3 +31,5 @@ Route::resource('appointments', AppointmentController::class)
 
 Route::resource('/tipe_wash', TipeWashController::class)
     ->only(['index', 'create', 'store']);
+
+Route::post('/tipe_wash/listar', [TipeWashController::class, 'getListado'])->name('tipeWash.getListado');
