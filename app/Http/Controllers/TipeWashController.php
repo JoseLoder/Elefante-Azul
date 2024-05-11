@@ -37,7 +37,7 @@ class TipeWashController extends Controller
             // si la validación falla, devolvemos un mensaje de error
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validation error',
+                'message' => 'Error en la validación',
                 'errors' => $validator->errors()
             ]);
         } else {
@@ -52,14 +52,24 @@ class TipeWashController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Tipe Wash created successfully',
+                'message' => 'Tipo de lavado creado correctamente',
                 'data' => $tipeWash
             ]);
         }
     }
 
+    public function eliminarTipoLavado(Request $request)
+    {
+
+        $tipeWash = TipeWash::find($request->idTipeWash);
+        $tipeWash->delete();
+
+        return response()->json(['success' => true]);
+    }
+
     public function getListado(Request $request)
     {
+
 
         //Construcción del WHERE
         $where = '';
@@ -92,11 +102,10 @@ class TipeWashController extends Controller
         }
 
         //Ejecución de la consulta
-        $tipeWash = DB::select('SELECT * FROM tipe_wash ' . $where . ' ' . $orderBy . ' ' . $paginacion);
-
+        $tipeWash = DB::select('SELECT * FROM tipe_washes ' . $where . ' ' . $orderBy . ' ' . $paginacion);
         //Número de registros
-        $recordsFiltered = DB::select('SELECT COUNT(id) as recordsNum FROM tipe_wash ' . $where)[0]->recordsNum;
-        $recordsTotal = DB::select('SELECT COUNT(id) as recordsNum FROM tipe_wash')[0]->recordsNum;
+        $recordsFiltered = DB::select('SELECT COUNT(id) as recordsNum FROM tipe_washes ' . $where)[0]->recordsNum;
+        $recordsTotal = DB::select('SELECT COUNT(id) as recordsNum FROM tipe_washes')[0]->recordsNum;
 
         //Datos
         $datos = array();

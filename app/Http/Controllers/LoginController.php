@@ -2,13 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 
 class LoginController extends Controller
 {
     public function login()
     {
         return view('login');
+    }
+
+    public function googleRedirect()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function googleLogin()
+    {
+
+        $googleUser = Socialite::driver('google')->user();
+
+        $user = User::updateOrCreate([
+            'google_id' => $googleUser->id,
+        ], [
+            'name' => $googleUser->name,
+            'email' => $googleUser->email,
+            'password' => $googleUser->id,
+            'google_id' => $googleUser->id,
+        ]);
+
+        Auth::login($user);
+
+        return redirect()->route('appointments.index');
     }
 
     public function authenticate(Request $request)

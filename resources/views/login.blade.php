@@ -18,6 +18,7 @@
         <label for="password">Contraseña</label>
         <input type="password" name="password" id="password" required>
         <button type="submit">Login</button>
+        <a href="{{route('googleRedirect')}}">Logearse con Google</a>
         <a href="{{ url()->previous() }}">Volver</a>
     </form>
 

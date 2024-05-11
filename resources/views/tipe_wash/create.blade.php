@@ -63,7 +63,7 @@
         --}}
         <button  type="submit" id="send" disabled>Crear pedido</button>
         @if (Auth::check())
-            <a href="{{ route('appointments.index') }}">Ver Listado</a>
+            <a href="{{ route('tipe_wash.index') }}">Ver Listado</a>
         @endif
     </form>
     <x-footer/>
@@ -199,7 +199,7 @@
             .then(data => {
                 if (data.status === 'success') {
                     alert(data.message);
-                    window.location.href = "{{ route('appointments.create') }}";
+                    window.location.href = "{{ route('tipe_wash.index') }}";
                 }else {
                     alert(data.message);
                     if('description' in data.errors) {
