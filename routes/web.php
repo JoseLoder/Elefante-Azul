@@ -26,7 +26,8 @@ Route::resource('appointments', AppointmentController::class)
     ->middleware('auth');
 
 Route::resource('/tipe_wash', TipeWashController::class)
-    ->only(['index', 'create', 'store', 'destroy']);
+    ->only(['index', 'create', 'store'])
+    ->middleware('auth');
 
 // Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index')->->middleware('auth');
 // Route::get('/appointments/create', [AppointmentController::class, 'create'])->name('appointments.create');
