@@ -24,13 +24,22 @@ class LoginController extends Controller
 
         $googleUser = Socialite::driver('google')->user();
 
+        $googleId = $googleUser->id;
+
+
+        if (User::where('google_id', $googleId)->exists()) {
+            $user = User::where('google_id', $googleId)->first();
+            Auth::login($user);
+            return redirect()->route('appointments.index');
+        }
+
         $user = User::updateOrCreate([
-            'google_id' => $googleUser->id,
+            'google_id' => $googleId,
         ], [
             'name' => $googleUser->name,
             'email' => $googleUser->email,
-            'password' => $googleUser->id,
-            'google_id' => $googleUser->id,
+            'password' => $googleId,
+            'google_id' => $googleId,
         ]);
 
         Auth::login($user);
