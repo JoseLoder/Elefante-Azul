@@ -13,7 +13,7 @@
                     "paging": true, // Activar la paginación
                     "pagingType": "numbers", // Tipo de paginación
                     "lengthChange": true, // Activar el cambio de cantidad de registros por página
-                    "lengthMenu": [[5, 10, -1], [5, 10, 'Todos']], // Cantidad de registros por página
+                    "lengthMenu": [[5, 10, 100], [5, 10, 100]], // Cantidad de registros por página
                     "order": [[ 1, "asc" ]], // Ordenar por la columna 1
                     "processing": true, // Activar el procesamiento de la tabla (para mostrar el indicador de carga)
                     "serverSide": true, // Activar el procesamiento del lado del servidor (para optimizar la carga de grandes cantidades de datos)
@@ -104,6 +104,8 @@
                         });
                     }  
                 });
+
+                
 
             });
 

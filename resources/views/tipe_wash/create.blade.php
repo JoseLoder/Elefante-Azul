@@ -82,6 +82,7 @@
         let timeError = document.getElementById('errorTime');
 
         description.addEventListener('blur', () => {
+            //Validación local
             let descriptionValue = description.value.trim();
             if (descriptionValue !== '') {
                if (descriptionValue.split(' ')[0].toLowerCase() !== 'lavado'){
@@ -97,7 +98,26 @@
             }else {
                 errors['description'] = 'El nombre no puede estar vacío';
             }
-            validated()
+
+            //Validación remota
+            let formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('description', descriptionValue);
+
+            fetch("{{ route('tipe_wash.checkDescription') }}", {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    errors['description'] = 'El nombre de este tipo de lavado ya existe';
+                    send['description'] = undefined; //De esta manera aunque me habiliten el boton de enviar modificando el html, no se enviará el formulario
+                }
+
+                validated() //por la asincronía del fetch, debo de llamar a la función de validación aquí
+            })
+
         });
 
         price.addEventListener('blur', () => {
@@ -185,6 +205,12 @@
 
         buttonSend.addEventListener('click', (e) => {
             e.preventDefault();
+
+            //La siguiente condicional nos garantiza que no envie nada si habilitan el boton de enviar manualmente en el html (Si el archivo .js esta ofuscado)
+            if (send['description'] === undefined || send['price'] === undefined || send['time'] === undefined) {
+                return;
+            }
+
             let formData = new FormData();
             formData.append('_token', '{{ csrf_token() }}');
             formData.append('description', send['description']);

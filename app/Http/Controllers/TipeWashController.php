@@ -123,4 +123,15 @@ class TipeWashController extends Controller
 
         return response()->json(['draw' => $request->draw, 'recordsTotal' => $recordsTotal, 'recordsFiltered' => $recordsFiltered, 'data' => $datos]);
     }
+
+    public function checkDescription(Request $request)
+    {
+        $tipeWash = TipeWash::where('description', $request->description)->first();
+
+        if ($tipeWash) {
+            return response()->json(['exists' => true]);
+        } else {
+            return response()->json(['exists' => false]);
+        }
+    }
 }
