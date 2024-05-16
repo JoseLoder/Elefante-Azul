@@ -19,7 +19,8 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'admin',
             'email' => 'admin@admin.es',
-            'password' => bcrypt('admin')
+            'password' => bcrypt('admin'),
+            // 'google_ id' => env('ID_GOOGLE_ADMIN')
         ]);
     }
 }
